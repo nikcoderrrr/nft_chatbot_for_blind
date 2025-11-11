@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Neuro-Fuzzy Accessible Verification (No React)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main>
+      <h1>Secure Form (Accessible)</h1>
+
+      <section aria-labelledby="status-heading" class="panel">
+        <h2 id="status-heading">Verification Status</h2>
+        <div id="status" role="status" aria-live="polite">
+          Not evaluated yet.
+        </div>
+        <button id="btn-evaluate" class="primary">Evaluate Risk</button>
+      </section>
+
+      <section aria-labelledby="challenge-heading" class="panel">
+        <h2 id="challenge-heading">Challenge</h2>
+
+        <!-- Lightweight logic task -->
+        <div id="challenge-light" class="challenge" hidden>
+          <p id="logic-text">
+            Type whether the number shown is <strong>odd</strong> or
+            <strong>even</strong>:
+            <span id="logic-number"></span>
+          </p>
+          <label for="logic-answer" class="sr-only">Your answer</label>
+          <input
+            id="logic-answer"
+            type="text"
+            placeholder="odd / even"
+            aria-describedby="logic-text"
+          />
+          <button id="btn-verify-logic">Verify</button>
+        </div>
+
+        <!-- Audio-first challenge (with voice input option) -->
+        <div id="challenge-audio" class="challenge" hidden>
+          <p id="audio-instructions">
+            You will hear a short prompt. Type or speak exactly what you hear.
+          </p>
+          <div class="controls">
+            <button id="btn-play-audio" aria-describedby="audio-instructions">
+              Play
+            </button>
+            <button id="btn-slow-audio">Play Slow</button>
+            <button id="btn-replay">Replay</button>
+            <!-- Voice input controls -->
+            <button id="btn-record" aria-pressed="false">🎤 Record</button>
+            <button id="btn-stop" disabled>Stop</button>
+            <span id="rec-status" class="hint" aria-live="polite"></span>
+          </div>
+          <div id="audio-prompt" class="sr-only" aria-live="polite"></div>
+          <label for="audio-answer" class="sr-only">Type the spoken text</label>
+          <input
+            id="audio-answer"
+            type="text"
+            placeholder="type or use the mic…"
+          />
+          <button id="btn-verify-audio">Verify</button>
+          <div id="audio-hint" class="hint" aria-live="polite"></div>
+        </div>
+
+        <!-- Human handoff (demo) -->
+        <div id="challenge-human" class="challenge" hidden>
+          <p>
+            We’re having trouble verifying. Please
+            <a href="#" aria-label="Open support chat (demo)">contact support</a
+            >.
+          </p>
+        </div>
+      </section>
+
+      <section aria-labelledby="form-heading" class="panel">
+        <h2 id="form-heading">Protected Form</h2>
+        <form id="demo-form">
+          <label for="name">Name</label>
+          <input id="name" name="name" required value="Niharika Suresh" />
+          <label for="email">Email</label>
+          <input
+            id="email"
+            name="email"
+            type="email"
+            required
+            value="cheekusuresh@gmail.com"
+          />
+          <button class="primary" type="submit">Submit</button>
+        </form>
+        <div id="form-result" role="status" aria-live="polite"></div>
+      </section>
+    </main>
+
+    <script src="client.js"></script>
+  </body>
+</html>

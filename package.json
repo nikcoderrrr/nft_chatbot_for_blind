@@ -1,0 +1,17 @@
+{
+  "name": "neuro-fuzzy-accessible-captcha",
+  "version": "1.2.0",
+  "description": "Accessible, neuro-fuzzy bot prevention without React, with voice input",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "NODE_ENV=development node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "helmet": "^7.0.0",
+    "morgan": "^1.10.0",
+    "nanoid": "^5.0.7"
+  }
+}
