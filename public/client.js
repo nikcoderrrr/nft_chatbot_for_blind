@@ -214,18 +214,47 @@ async function audioChallenge() {
   if (!recognition) initRecognition();
 }
 
-function speak(text, rate=1.0) {
+function speak(text, rate = 1.0) {
   if (!("speechSynthesis" in window)) {
     alert("SpeechSynthesis not supported; read the prompt in the Challenge section and type it.");
     return;
   }
-  const u = new SpeechSynthesisUtterance(text);
-  u.rate = rate; u.lang = "en-US";
-  window.speechSynthesis.cancel();
-  window.speechSynthesis.speak(u);
+
+  // cancel existing speech to avoid overlap
+  try { window.speechSynthesis.cancel(); } catch (e) { /* ignore */ }
+
+  const utter = new SpeechSynthesisUtterance(text);
+  utter.rate = rate;
+  utter.lang = "en-US";
+
+  function doSpeakWithVoiceSelection() {
+    const voices = window.speechSynthesis.getVoices();
+    if (voices && voices.length) {
+      // Prefer an English voice when available
+      utter.voice = voices.find(v => v.lang && v.lang.startsWith("en")) || voices[0];
+    }
+    try {
+      window.speechSynthesis.speak(utter);
+    } catch (e) {
+      console.warn("SpeechSynthesis.speak failed:", e);
+    }
+  }
+
+  const voicesNow = window.speechSynthesis.getVoices();
+  if (!voicesNow || voicesNow.length === 0) {
+    const handler = () => {
+      window.speechSynthesis.removeEventListener("voiceschanged", handler);
+      doSpeakWithVoiceSelection();
+    };
+    window.speechSynthesis.addEventListener("voiceschanged", handler);
+  } else {
+    doSpeakWithVoiceSelection();
+  }
+
+  return utter;
 }
 btnPlay.addEventListener("click", () => speak(audioPromptEl.textContent, 1.0));
-btnSlow.addEventListener("click", () => speak(audioPromptEl.textContent, 0.8));
+btnSlow.addEventListener("click", () => { console.log("Play slow audio, rate=0.5, text:", audioPromptEl.textContent); speak(audioPromptEl.textContent, 0.5); });
 btnReplay.addEventListener("click", () => speak(audioPromptEl.textContent, 1.0));
 
 btnVerifyAudio.addEventListener("click", async () => {
