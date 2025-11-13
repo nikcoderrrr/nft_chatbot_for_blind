@@ -73,7 +73,7 @@ project/
 
 ## Installation & Running
 
-git clone https://github.com/YOUR-USERNAME/neuro-fuzzy-accessible-captcha.git
+git clone (https://github.com/nikcoderrrr/nft_chatbot_for_blind.git)
 cd neuro-fuzzy-accessible-captcha
 npm install
 npm start
