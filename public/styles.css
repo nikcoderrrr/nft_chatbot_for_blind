@@ -231,3 +231,90 @@ a:hover {
     margin-top: 0.5rem;
   }
 }
+
+.challenge:not([hidden]) {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.challenge:not([hidden]) > p,
+.challenge:not([hidden]) > label,
+.challenge:not([hidden]) > #logic-answer,
+.challenge:not([hidden]) > .controls,
+.challenge:not([hidden]) > .sr-only,
+.challenge:not([hidden]) > #audio-answer,
+.challenge:not([hidden]) > #audio-hint {
+  grid-column: 1 / -1;
+}
+
+#logic-answer + button,
+#audio-answer + button,
+#btn-new-light,
+#btn-new-audio {
+  grid-column: 1 / -1;
+  width: 100%;
+  margin-top: 0;
+}
+
+#btn-new-light,
+#btn-new-audio {
+  background: var(--input-bg);
+  border-color: var(--border-color);
+}
+
+#btn-new-light:not(:disabled):hover,
+#btn-new-audio:not(:disabled):hover {
+  background: var(--border-color);
+}
+
+@media (min-width: 600px) {
+  .challenge:not([hidden]) {
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem 1rem;
+  }
+
+  #logic-answer + button,
+  #audio-answer + button {
+    grid-column: 1 / 2;
+  }
+
+  #btn-new-light,
+  #btn-new-audio {
+    grid-column: 2 / 3;
+  }
+}
+
+@media (min-width: 900px) {
+  main {
+    max-width: 1200px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+      "header   header"
+      "status   challenge"
+      "form     form";
+    gap: 1.5rem;
+  }
+
+  h1 {
+    grid-area: header;
+    margin-bottom: 0;
+  }
+
+  section[aria-labelledby="status-heading"] {
+    grid-area: status;
+    margin-bottom: 0;
+  }
+
+  section[aria-labelledby="challenge-heading"] {
+    grid-area: challenge;
+    margin-bottom: 0;
+  }
+
+  section#form-section {
+    grid-area: form;
+    margin-bottom: 0;
+  }
+}

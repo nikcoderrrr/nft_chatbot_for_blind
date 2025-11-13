@@ -98,6 +98,7 @@ const lightBox = document.getElementById("challenge-light");
 const logicNum = document.getElementById("logic-number");
 const logicAns = document.getElementById("logic-answer");
 const btnVerifyLogic = document.getElementById("btn-verify-logic");
+const btnNewLight = document.getElementById("btn-new-light");
 const audioBox = document.getElementById("challenge-audio");
 const audioPromptEl = document.getElementById("audio-prompt");
 const audioHintEl = document.getElementById("audio-hint");
@@ -106,6 +107,7 @@ const btnSlow = document.getElementById("btn-slow-audio");
 const btnReplay = document.getElementById("btn-replay");
 const audioAns = document.getElementById("audio-answer");
 const btnVerifyAudio = document.getElementById("btn-verify-audio");
+const btnNewAudio = document.getElementById("btn-new-audio");
 const humanBox = document.getElementById("challenge-human");
 const formSection = document.getElementById("form-section");
 const form = document.getElementById("demo-form");
@@ -197,6 +199,14 @@ btnVerifyLogic.addEventListener("click", async () => {
   }
 });
 
+btnNewLight.addEventListener("click", async () => {
+  const res = await fetch("/api/logic-challenge", { headers: { "X-Session-Id": getSessionId() } });
+  const { number } = await res.json();
+  logicNum.textContent = String(number);
+  logicAns.value = "";
+  logicAns.focus();
+});
+
 // ---- Audio challenge (TTS + optional voice input) ----
 async function audioChallenge() {
   hideAll();
@@ -273,6 +283,15 @@ btnVerifyAudio.addEventListener("click", async () => {
     statusEl.textContent = "Audio challenge failed. Replay or evaluate again.";
     statusEl.className = "bad";
   }
+});
+
+btnNewAudio.addEventListener("click", async () => {
+  const res = await fetch("/api/audio-challenge", { headers: { "X-Session-Id": getSessionId() } });
+  const { phrase, hint } = await res.json();
+  audioPromptEl.textContent = phrase;
+  audioHintEl.textContent = `Hint: ${hint}`;
+  audioAns.value = "";
+  audioAns.focus();
 });
 
 // ---- Speech Recognition (voice input) ----
