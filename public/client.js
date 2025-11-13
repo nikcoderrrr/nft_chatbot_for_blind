@@ -107,8 +107,12 @@ const btnReplay = document.getElementById("btn-replay");
 const audioAns = document.getElementById("audio-answer");
 const btnVerifyAudio = document.getElementById("btn-verify-audio");
 const humanBox = document.getElementById("challenge-human");
+const formSection = document.getElementById("form-section");
 const form = document.getElementById("demo-form");
 const resultEl = document.getElementById("form-result");
+
+// local gated state
+let verified = false;
 
 // Voice capture refs
 const recStatus = document.getElementById("rec-status");
@@ -136,6 +140,8 @@ btnEval.addEventListener("click", async () => {
 
   if (data.decision.action === "none") {
     statusEl.classList.add("ok");
+    // No challenge required — allow the user to proceed
+    showForm();
   } else if (data.decision.action === "light") {
     await lightChallenge();
   } else if (data.decision.action === "audio") {
@@ -146,7 +152,22 @@ btnEval.addEventListener("click", async () => {
   }
 });
 
-function hideAll() { lightBox.hidden = true; audioBox.hidden = true; humanBox.hidden = true; }
+function hideAll() { 
+  lightBox.hidden = true; 
+  audioBox.hidden = true; 
+  humanBox.hidden = true; 
+  if (formSection) formSection.hidden = true;
+}
+
+function showForm() {
+  hideAll();
+  verified = true;
+  if (formSection) {
+    formSection.hidden = false;
+    const nameInput = document.getElementById("name");
+    if (nameInput) nameInput.focus();
+  }
+}
 
 // ---- Light challenge ----
 async function lightChallenge() {
@@ -168,6 +189,7 @@ btnVerifyLogic.addEventListener("click", async () => {
   if (res.ok) {
     statusEl.textContent = "Light challenge passed ✅";
     statusEl.className = "ok";
+    showForm();
   } else {
     state.retries++;
     statusEl.textContent = "Light challenge failed. Try again or evaluate risk once more.";
@@ -216,6 +238,7 @@ btnVerifyAudio.addEventListener("click", async () => {
   if (res.ok) {
     statusEl.textContent = "Audio challenge passed ✅";
     statusEl.className = "ok";
+    showForm();
   } else {
     state.retries++;
     statusEl.textContent = "Audio challenge failed. Replay or evaluate again.";
@@ -296,6 +319,10 @@ btnStop.addEventListener("click", () => {
 // ---- Protected form ----
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
+  if (!verified) {
+    resultEl.textContent = "Please complete verification first.";
+    return;
+  }
   const res = await fetch("/api/submit-form", {
     method: "POST",
     headers: { "Content-Type": "application/json", "X-Session-Id": getSessionId() },
